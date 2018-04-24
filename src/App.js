@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import './App.css';
 
 let textColor = '#fff';
@@ -30,6 +30,14 @@ let fakeServerData = {
         name: 'Rock',
         songs: [
           {name: 'Beat It', duration: 1235},
+          {name: 'Rosa Helikopter', duration: 1235},
+          {name: 'Cannelloni Makaroni', duration: 1235}
+        ]
+      },
+      {
+        name: 'Discover Weekly',
+        songs: [
+          {name: 'Beat It', duration: 641},
           {name: 'Rosa Helikopter', duration: 1235},
           {name: 'Cannelloni Makaroni', duration: 1235}
         ]
@@ -94,7 +102,8 @@ class Filter extends Component{
     return(
       <div style={defaultStyle}>
         <img/>
-        <input type="text"/>
+        <input type="text" onKeyUp={event => this.props
+          .onTextChange(event.target.value)} />
         Filter
       </div>
     );
@@ -103,15 +112,25 @@ class Filter extends Component{
 
 class App extends Component {
   constructor(){
-    super();
-    this.state = {serverData: {}}
+    super()
+    this.state = {
+      serverData: {},
+      filterString: ''
+    }
   }
   componentDidMount(){
     setTimeout(() => {
         this.setState({serverData: fakeServerData})
     }, 1000)
   }
+
   render() {
+    let playlistToRender = this.state.serverData.user ? this.state.serverData.user.playlists
+    .filter(playlist =>
+      playlist.name.toLowerCase().includes(
+        this.state.filterString.toLowerCase())
+    ) : []
+
     return (
       <div className="App">
         {this.state.serverData.user ?
@@ -126,12 +145,12 @@ class App extends Component {
               {this.state.serverData.user.name}
               's Playlists</h1>
 
-            <PlaylistCounter playlists={this.state.serverData.user.playlists}/>
-            <HoursCounter playlists={this.state.serverData.user.playlists}/>
+            <PlaylistCounter playlists={playlistToRender}/>
+            <HoursCounter playlists={playlistToRender}/>
 
-            <Filter/>
+            <Filter onTextChange={text => this.setState({filterString: text})}/>
 
-            {this.state.serverData.user.playlists.map(playlist =>
+            {playlistToRender.map(playlist =>
               <Playlist playlist={playlist}/>
             )}
 
