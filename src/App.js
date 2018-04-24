@@ -154,8 +154,6 @@ class App extends Component {
               <Playlist playlist={playlist}/>
             )}
 
-
-
           </div>: <h1>Loading...</h1>
         }
       </div>
